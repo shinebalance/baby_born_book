@@ -304,8 +304,18 @@
             line-height: 1.1;
             min-height: 140px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+        }
+        
+        .furigana {
+            font-size: 36px;
+            font-weight: 400;
+            color: #34495e;
+            margin-bottom: 10px;
+            opacity: 0.8;
+            font-family: 'Noto Sans JP', sans-serif;
         }
         
         .baby-name.vertical {
@@ -315,6 +325,15 @@
             line-height: 1.2;
             min-height: auto;
             min-width: 140px;
+            flex-direction: row;
+        }
+        
+        .baby-name.vertical .furigana {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 32px;
+            margin-bottom: 0;
+            margin-right: 15px;
         }
         
         .birth-info {
@@ -476,6 +495,11 @@
             </div>
             
             <div class="form-group">
+                <label for="babyNameFurigana">ふりがな</label>
+                <input type="text" id="babyNameFurigana" placeholder="例: たろう">
+            </div>
+            
+            <div class="form-group">
                 <label for="birthDate">誕生日 <span class="required">*</span></label>
                 <input type="date" id="birthDate" required>
             </div>
@@ -483,7 +507,7 @@
             <div class="form-group">
                 <label for="babyPhoto">赤ちゃんの写真 <span class="required">*</span></label>
                 <div class="file-input-wrapper">
-                    <input type="file" id="babyPhoto" accept="image/*" required>
+                    <input type="file" id="babyPhoto" accept="image/*" capture="user" required>
                     <label for="babyPhoto" class="file-input-label">写真をアップロード</label>
                 </div>
             </div>
@@ -532,7 +556,10 @@
                     
                     <img class="baby-photo" id="photoPreview" style="display: none;" alt="赤ちゃんの写真">
                     
-                    <div class="baby-name" id="namePreview">お名前を入力してください</div>
+                    <div class="baby-name" id="namePreview">
+                        <div class="furigana" id="furiganaPreview" style="display: none;"></div>
+                        <div class="name-text">お名前を入力してください</div>
+                    </div>
                     
                     <div class="birth-info" id="birthPreview">誕生日を選択してください</div>
                 </div>
@@ -542,6 +569,7 @@
 
     <script>
         const babyNameInput = document.getElementById('babyName');
+        const babyNameFuriganaInput = document.getElementById('babyNameFurigana');
         const birthDateInput = document.getElementById('birthDate');
         const babyPhotoInput = document.getElementById('babyPhoto');
         const backgroundImageInput = document.getElementById('backgroundImage');
@@ -551,6 +579,8 @@
         const printButton = document.getElementById('printButton');
         
         const namePreview = document.getElementById('namePreview');
+        const furiganaPreview = document.getElementById('furiganaPreview');
+        const nameTextElement = namePreview.querySelector('.name-text');
         const birthPreview = document.getElementById('birthPreview');
         const photoPreview = document.getElementById('photoPreview');
         const backgroundPreview = document.getElementById('backgroundPreview');
@@ -560,9 +590,17 @@
         function updatePreview() {
             // 名前の更新
             if (babyNameInput.value) {
-                namePreview.textContent = babyNameInput.value;
+                nameTextElement.textContent = babyNameInput.value;
             } else {
-                namePreview.textContent = 'お名前を入力してください';
+                nameTextElement.textContent = 'お名前を入力してください';
+            }
+            
+            // ふりがなの更新
+            if (babyNameFuriganaInput.value) {
+                furiganaPreview.textContent = babyNameFuriganaInput.value;
+                furiganaPreview.style.display = 'block';
+            } else {
+                furiganaPreview.style.display = 'none';
             }
             
             // 誕生日の更新
@@ -644,6 +682,7 @@
         
         // イベントリスナーの設定
         babyNameInput.addEventListener('input', updatePreview);
+        babyNameFuriganaInput.addEventListener('input', updatePreview);
         birthDateInput.addEventListener('change', updatePreview);
         titleTextInput.addEventListener('input', updatePreview);
         borderStyleSelect.addEventListener('change', updatePreview);
