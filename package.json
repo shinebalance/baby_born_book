@@ -9,7 +9,14 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": ["vue", "vite", "baby", "naming", "certificate", "pdf"],
+  "keywords": [
+    "vue",
+    "vite",
+    "baby",
+    "naming",
+    "certificate",
+    "pdf"
+  ],
   "author": "",
   "license": "MIT",
   "repository": {
@@ -29,5 +36,8 @@
     "tailwindcss": "^4.1.10",
     "vite": "^6.3.5",
     "vue": "^3.5.17"
+  },
+  "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1"
   }
 }
