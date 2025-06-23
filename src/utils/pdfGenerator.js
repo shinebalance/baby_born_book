@@ -1,12 +1,34 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 
+// 日本語文字を安全な文字に変換する関数
+const replaceJapaneseChars = (text) => {
+  if (!text) return text
+  return text
+    .replace(/命/g, 'Mei')
+    .replace(/名/g, 'Na')
+    .replace(/書/g, 'Sho')
+    .replace(/生/g, 'Sei')
+    .replace(/年/g, 'Nen')
+    .replace(/月/g, 'Gatsu')
+    .replace(/日/g, 'Nichi')
+    .replace(/時/g, 'Ji')
+    .replace(/分/g, 'Fun')
+    .replace(/身長/g, 'Height')
+    .replace(/体重/g, 'Weight')
+    .replace(/令和/g, 'Reiwa')
+    .replace(/平成/g, 'Heisei')
+    .replace(/まれ/g, 'mare')
+    .replace(/cm/g, 'cm')
+    .replace(/g/g, 'g')
+}
+
 export const generatePDFDocument = async (babyData) => {
   try {
     const pdfDoc = await PDFDocument.create()
     const page = pdfDoc.addPage([595, 842]) // A4サイズ (ポイント単位)
     
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
-    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+    const font = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+    const boldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
     
     const { width, height } = page.getSize()
     
@@ -20,7 +42,7 @@ export const generatePDFDocument = async (babyData) => {
     })
     
     // タイトル「命名書」
-    page.drawText('命名書', {
+    page.drawText(replaceJapaneseChars('命名書'), {
       x: width / 2 - 60,
       y: height - 80,
       size: 24,
@@ -37,7 +59,7 @@ export const generatePDFDocument = async (babyData) => {
       
       if (isVertical) {
         // 縦書きの場合
-        const chars = babyData.name.split('')
+        const chars = replaceJapaneseChars(babyData.name).split('')
         chars.forEach((char, index) => {
           page.drawText(char, {
             x: namePosition.x,
@@ -50,7 +72,7 @@ export const generatePDFDocument = async (babyData) => {
         
         // ふりがな（縦書き）
         if (babyData.furigana) {
-          const furiganaChars = babyData.furigana.split('')
+          const furiganaChars = replaceJapaneseChars(babyData.furigana).split('')
           furiganaChars.forEach((char, index) => {
             page.drawText(char, {
               x: namePosition.x - 30,
@@ -63,7 +85,7 @@ export const generatePDFDocument = async (babyData) => {
         }
       } else {
         // 横書きの場合（従来通り）
-        page.drawText(babyData.name, {
+        page.drawText(replaceJapaneseChars(babyData.name), {
           x: namePosition.x - (babyData.name.length * (nameStyle.fontSize / 2)),
           y: namePosition.y,
           size: nameStyle.fontSize,
@@ -73,7 +95,7 @@ export const generatePDFDocument = async (babyData) => {
         
         // ふりがな
         if (babyData.furigana) {
-          page.drawText(babyData.furigana, {
+          page.drawText(replaceJapaneseChars(babyData.furigana), {
             x: namePosition.x - (babyData.furigana.length * (nameStyle.furiganaSize / 2)),
             y: namePosition.y - 30,
             size: nameStyle.furiganaSize,
@@ -88,7 +110,7 @@ export const generatePDFDocument = async (babyData) => {
     const datePosition = calculatePDFPosition(babyData.positions?.dateSection || { x: 50, y: 40 }, width, height)
     
     if (babyData.birthDate) {
-      const formattedDate = formatBirthDateForPDF(babyData.birthDate)
+      const formattedDate = replaceJapaneseChars(formatBirthDateForPDF(babyData.birthDate))
       page.drawText(formattedDate, {
         x: datePosition.x - (formattedDate.length * 6),
         y: datePosition.y,
@@ -99,7 +121,7 @@ export const generatePDFDocument = async (babyData) => {
       
       // 誕生時刻
       if (babyData.birthTime) {
-        page.drawText(`${babyData.birthTime} 生まれ`, {
+        page.drawText(replaceJapaneseChars(`${babyData.birthTime} 生まれ`), {
           x: datePosition.x - 50,
           y: datePosition.y - 20,
           size: 10,
@@ -115,7 +137,7 @@ export const generatePDFDocument = async (babyData) => {
         if (babyData.height && babyData.weight) physicalInfo += ' / '
         if (babyData.weight) physicalInfo += `体重: ${babyData.weight}g`
         
-        page.drawText(physicalInfo, {
+        page.drawText(replaceJapaneseChars(physicalInfo), {
           x: datePosition.x - (physicalInfo.length * 4),
           y: datePosition.y - 40,
           size: 10,
@@ -130,7 +152,7 @@ export const generatePDFDocument = async (babyData) => {
       const meaningPosition = calculatePDFPosition(babyData.positions?.meaningSection || { x: 50, y: 80 }, width, height)
       
       // フリーテキストを複数行に分割
-      const lines = wrapText(babyData.meaning, 40)
+      const lines = wrapText(replaceJapaneseChars(babyData.meaning), 40)
       lines.forEach((line, index) => {
         page.drawText(line, {
           x: meaningPosition.x - 100,
