@@ -30,26 +30,57 @@ export const generatePDFDocument = async (babyData) => {
     
     // 名前セクション
     const namePosition = calculatePDFPosition(babyData.positions?.nameSection || { x: 50, y: 20 }, width, height)
+    const nameStyle = babyData.nameStyle || { fontSize: 40, furiganaSize: 16, writingMode: 'horizontal' }
     
     if (babyData.name) {
-      // 名前（漢字）
-      page.drawText(babyData.name, {
-        x: namePosition.x - (babyData.name.length * 20),
-        y: namePosition.y,
-        size: 40,
-        font: boldFont,
-        color: rgb(0.1, 0.1, 0.1),
-      })
+      const isVertical = nameStyle.writingMode === 'vertical'
       
-      // ふりがな
-      if (babyData.furigana) {
-        page.drawText(babyData.furigana, {
-          x: namePosition.x - (babyData.furigana.length * 8),
-          y: namePosition.y - 30,
-          size: 16,
-          font: font,
-          color: rgb(0.3, 0.3, 0.3),
+      if (isVertical) {
+        // 縦書きの場合
+        const chars = babyData.name.split('')
+        chars.forEach((char, index) => {
+          page.drawText(char, {
+            x: namePosition.x,
+            y: namePosition.y - (index * nameStyle.fontSize),
+            size: nameStyle.fontSize,
+            font: boldFont,
+            color: rgb(0.1, 0.1, 0.1),
+          })
         })
+        
+        // ふりがな（縦書き）
+        if (babyData.furigana) {
+          const furiganaChars = babyData.furigana.split('')
+          furiganaChars.forEach((char, index) => {
+            page.drawText(char, {
+              x: namePosition.x - 30,
+              y: namePosition.y - (index * nameStyle.furiganaSize),
+              size: nameStyle.furiganaSize,
+              font: font,
+              color: rgb(0.3, 0.3, 0.3),
+            })
+          })
+        }
+      } else {
+        // 横書きの場合（従来通り）
+        page.drawText(babyData.name, {
+          x: namePosition.x - (babyData.name.length * (nameStyle.fontSize / 2)),
+          y: namePosition.y,
+          size: nameStyle.fontSize,
+          font: boldFont,
+          color: rgb(0.1, 0.1, 0.1),
+        })
+        
+        // ふりがな
+        if (babyData.furigana) {
+          page.drawText(babyData.furigana, {
+            x: namePosition.x - (babyData.furigana.length * (nameStyle.furiganaSize / 2)),
+            y: namePosition.y - 30,
+            size: nameStyle.furiganaSize,
+            font: font,
+            color: rgb(0.3, 0.3, 0.3),
+          })
+        }
       }
     }
     
@@ -94,24 +125,16 @@ export const generatePDFDocument = async (babyData) => {
       }
     }
     
-    // 由来セクション
+    // フリーテキストセクション
     if (babyData.meaning) {
       const meaningPosition = calculatePDFPosition(babyData.positions?.meaningSection || { x: 50, y: 80 }, width, height)
       
-      page.drawText('名前の由来:', {
-        x: meaningPosition.x - 50,
-        y: meaningPosition.y,
-        size: 12,
-        font: boldFont,
-        color: rgb(0.2, 0.2, 0.2),
-      })
-      
-      // 意味のテキストを複数行に分割
+      // フリーテキストを複数行に分割
       const lines = wrapText(babyData.meaning, 40)
       lines.forEach((line, index) => {
         page.drawText(line, {
           x: meaningPosition.x - 100,
-          y: meaningPosition.y - 20 - (index * 15),
+          y: meaningPosition.y - (index * 15),
           size: 10,
           font: font,
           color: rgb(0.3, 0.3, 0.3),

@@ -18,6 +18,51 @@
         <!-- プレビュー -->
         <div class="bg-white rounded-lg shadow-lg p-6">
           <h2 class="text-xl font-semibold mb-4 text-gray-700">プレビュー</h2>
+          
+          <!-- 名前スタイル設定 -->
+          <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+            <h3 class="text-sm font-semibold mb-3 text-gray-600">名前スタイル設定</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <!-- フォントサイズ -->
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">名前サイズ</label>
+                <input
+                  type="range"
+                  min="20"
+                  max="80"
+                  v-model="babyData.nameStyle.fontSize"
+                  class="w-full"
+                />
+                <span class="text-xs text-gray-500">{{ babyData.nameStyle.fontSize }}px</span>
+              </div>
+              
+              <!-- ふりがなサイズ -->
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">ふりがなサイズ</label>
+                <input
+                  type="range"
+                  min="8"
+                  max="24"
+                  v-model="babyData.nameStyle.furiganaSize"
+                  class="w-full"
+                />
+                <span class="text-xs text-gray-500">{{ babyData.nameStyle.furiganaSize }}px</span>
+              </div>
+              
+              <!-- 文字方向 -->
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">文字方向</label>
+                <select
+                  v-model="babyData.nameStyle.writingMode"
+                  class="w-full text-xs border border-gray-300 rounded px-2 py-1"
+                >
+                  <option value="horizontal">横書き</option>
+                  <option value="vertical">縦書き</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
           <CertificatePreview 
             :baby-data="babyData"
             @update:baby-data="updateBabyData"
@@ -72,6 +117,15 @@ export default {
         dateSection: { x: 50, y: 40 },
         photoSection: { x: 50, y: 60 },
         meaningSection: { x: 50, y: 80 }
+      },
+      sizes: {
+        nameSection: { width: 250, height: 100 },
+        dateSection: { width: 280, height: 120 }
+      },
+      nameStyle: {
+        fontSize: 40,
+        furiganaSize: 16,
+        writingMode: 'horizontal' // 'horizontal' | 'vertical'
       }
     })
 
@@ -102,6 +156,7 @@ export default {
         prompt('共有URL:', shareURL)
       })
     }
+
 
     onMounted(() => {
       const urlData = loadFromURL()

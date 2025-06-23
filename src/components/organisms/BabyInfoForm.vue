@@ -74,14 +74,14 @@
 
     <div>
       <label for="meaning" class="block text-sm font-medium text-gray-700 mb-2">
-        名前の由来・意味（オプション）
+        フリーテキスト（オプション）
       </label>
       <textarea
         id="meaning"
         v-model="formData.meaning"
         rows="3"
         :maxlength="200"
-        placeholder="名前に込めた思いや由来を記入してください..."
+        placeholder="自由にメッセージを入力してください..."
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       <p class="text-xs text-gray-500 mt-1">
@@ -176,7 +176,22 @@ export default {
         weight: '',
         backgroundImage: null,
         babyPhoto: null,
-        meaning: ''
+        meaning: '',
+        positions: {
+          nameSection: { x: 50, y: 20 },
+          dateSection: { x: 50, y: 40 },
+          photoSection: { x: 80, y: 60 },
+          meaningSection: { x: 50, y: 80 }
+        },
+        sizes: {
+          nameSection: { width: 250, height: 100 },
+          dateSection: { width: 280, height: 120 }
+        },
+        nameStyle: {
+          fontSize: 40,
+          furiganaSize: 16,
+          writingMode: 'horizontal'
+        }
       })
     }
 

@@ -10,7 +10,13 @@ export const generateShareableURL = (babyData) => {
       height: babyData.height || '',
       weight: babyData.weight || '',
       meaning: babyData.meaning || '',
-      positions: babyData.positions || {}
+      positions: babyData.positions || {},
+      sizes: babyData.sizes || {},
+      nameStyle: babyData.nameStyle || {
+        fontSize: 40,
+        furiganaSize: 16,
+        writingMode: 'horizontal'
+      }
     }
     
     // JSONを文字列化してBase64エンコード
@@ -58,6 +64,15 @@ export const loadFromURL = () => {
         dateSection: { x: 50, y: 40 },
         photoSection: { x: 80, y: 60 },
         meaningSection: { x: 50, y: 80 }
+      },
+      sizes: data.sizes || {
+        nameSection: { width: 250, height: 100 },
+        dateSection: { width: 280, height: 120 }
+      },
+      nameStyle: data.nameStyle || {
+        fontSize: 40,
+        furiganaSize: 16,
+        writingMode: 'horizontal'
       }
     }
   } catch (error) {
@@ -107,7 +122,7 @@ export const validateShareableData = (data) => {
   }
   
   if (data.meaning && data.meaning.length > 200) {
-    errors.push('名前の由来は200文字以内で入力してください')
+    errors.push('フリーテキストは200文字以内で入力してください')
   }
   
   // 数値項目のチェック
