@@ -1,0 +1,33 @@
+{
+  "name": "baby_born_book",
+  "version": "1.0.0",
+  "description": "赤ちゃんの命名書を簡単に作成・共有できるWebアプリケーション",
+  "main": "index.js",
+  "homepage": "https://shinebalance.github.io/baby_born_book/",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["vue", "vite", "baby", "naming", "certificate", "pdf"],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shinebalance/baby_born_book.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shinebalance/baby_born_book/issues"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "autoprefixer": "^10.4.21",
+    "pdf-lib": "^1.17.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.10",
+    "vite": "^6.3.5",
+    "vue": "^3.5.17"
+  }
+}
